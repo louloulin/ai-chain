@@ -1,6 +1,6 @@
 [package]
 name = "ai-chain-moonshot"
-version = "0.13.0"
+version = "0.14.0"
 edition = "2021"
 description = "A library implementing `ai-chains` for moonshot OpenAI's models. Chains can be use to apply the model series to complete complex tasks, such as text summation."
 license = "MIT"
@@ -16,7 +16,7 @@ repository = "https://github.com/godlinchong/ai-chain"
 futures = "0.3.28"
 async-openai = "0.16.2"
 async-trait.workspace = true
-ai-chain = { path = "../ai-chain", version = "0.13.0", default-features = false }
+ai-chain = { path = "../ai-chain", version = "0.14.0", default-features = false }
 serde.workspace = true
 strum = "0.24"
 strum_macros = "0.24"

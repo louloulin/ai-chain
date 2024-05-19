@@ -1,6 +1,6 @@
 [package]
 name = "ai-chain-mock"
-version = "0.13.0"
+version = "0.14.0"
 edition = "2021"
 description = "Use `ai-chain` with a mock backend. Useful for testing."
 license = "MIT"
@@ -13,7 +13,7 @@ repository = "https://github.com/godlinchong/ai-chain/"
 
 [dependencies]
 async-trait = "0.1.68"
-ai-chain = { path = "../ai-chain", version = "0.13.0", default-features = false }
+ai-chain = { path = "../ai-chain", version = "0.14.0", default-features = false }
 thiserror = "1.0.40"
 
 [dev-dependencies]

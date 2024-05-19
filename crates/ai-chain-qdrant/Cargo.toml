@@ -1,6 +1,6 @@
 [package]
 name = "ai-chain-qdrant"
-version = "0.13.0"
+version = "0.14.0"
 edition = "2021"
 description = "For using Qdrant with ai-chain"
 license = "MIT"
@@ -15,7 +15,7 @@ repository = "https://github.com/godlinchong/ai-chain/"
 [dependencies]
 anyhow.workspace = true
 async-trait.workspace = true
-ai-chain = { path = "../ai-chain", version = "0.13.0", default-features = false }
+ai-chain = { path = "../ai-chain", version = "0.14.0", default-features = false }
 qdrant-client = "1.1.2"
 serde.workspace = true
 serde_json.workspace = true
