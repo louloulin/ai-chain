@@ -38,19 +38,30 @@ println!("{}", res);
 
 To start using `ai-chain`, add it as a dependency in your `Cargo.toml` (you need Rust 1.65.0 or newer):
 
+
+ai-chain-openai
+
 ```toml
 [dependencies]
-ai-chain = "0.12.0"
-ai-chain-openai = "0.12.0"
+ai-chain = "0.14.0"
+ai-chain-openai = "0.14.0"
 ```
 
-The examples for `ai-chain-openai` require you to set the `OPENAI_API_KEY` environment variable which you can do like this:
+
+ai-chain-moonshot
+
+```toml
+[dependencies]
+ai-chain = "0.14.0"
+ai-chain-moonshot = "0.14.0"
+```
+
+The examples for `ai-chain-openai` or `ai-chain-moonshot` require you to set the `OPENAI_API_KEY` environment variable which you can do like this:
 
 ```bash
 export OPENAI_API_KEY="sk-YOUR_OPEN_AI_KEY_HERE"
 ```
 
-Then, refer to the [documentation](https://docs.rs/ai-chain) and [examples](/crates/ai-chain-openai/examples) to learn how to create prompt templates, chains, and more.
 
 ## Contributing 🤝
 
@@ -61,7 +72,3 @@ Then, refer to the [documentation](https://docs.rs/ai-chain) and [examples](/cra
 `ai-chain` is licensed under the [MIT License](/LICENSE).
 
 ## Connect with Us 🌐
-
-If you have any questions, suggestions, or feedback, feel free to open an issue or join our [community discord](https://discord.gg/kewN9Gtjt2). We're always excited to hear from our users and learn about your experiences with `ai-chain`.
-
-We hope you enjoy using `ai-chain` to unlock the full potential of Large Language Models in your projects. Happy coding! 🎉
