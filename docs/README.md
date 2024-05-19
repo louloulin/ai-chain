@@ -19,7 +19,7 @@ let res = prompt!(
 println!("{}", res);
 ```
 
-[➡️ **tutorial: get started with ai-chain**](https://sobelio.github.io/ai-chain/docs/getting-started-tutorial/index)
+[➡️ **tutorial: get started with ai-chain**](https://github.com/godlinchong/ai-chain/docs/getting-started-tutorial/index)
 [➡️ **quick-start**: Create project based on our template](https://github.com/godlinchong/ai-chain-template/generate)
 
 ## Features 🌟
@@ -41,20 +41,57 @@ To start using `ai-chain`, add it as a dependency in your `Cargo.toml` (you need
 
 ai-chain-openai
 
+* cargo dependencies
+
 ```toml
 [dependencies]
 ai-chain = "0.14.0"
 ai-chain-openai = "0.14.0"
 ```
 
+* coding
+
+```rust
+env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
+let exec = executor!(mooonshot)?;
+let exec = executor!()?;
+let res = prompt!(
+"You are a robot assistant for making personalized greetings",
+"Make a personalized greeting for Joe"
+)
+.run(parameters()!, &exec)
+.await?;
+println!("{}", res);
+```
+
+
+
 
 ai-chain-moonshot
+
+ * cargo dependencies
 
 ```toml
 [dependencies]
 ai-chain = "0.14.0"
 ai-chain-moonshot = "0.14.0"
 ```
+
+* coding
+
+```rust
+env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
+let exec = executor!(mooonshot)?;
+let exec = executor!()?;
+let res = prompt!(
+    "You are a robot assistant for making personalized greetings",
+    "Make a personalized greeting for Joe"
+)
+.run(parameters()!, &exec)
+.await?;
+println!("{}", res);
+```
+
 
 The examples for `ai-chain-openai` or `ai-chain-moonshot` require you to set the `OPENAI_API_KEY` environment variable which you can do like this:
 
