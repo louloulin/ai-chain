@@ -8,7 +8,7 @@ keywords = ["llm", "langchain", "chatgpt", "chain"]
 categories = ["science"]
 authors = ["linchong <729883852@qq.com>"]
 readme = "../../docs/README.md"
-repository = "https://gitee.com/godlinc/ai-chain"
+repository = "https://github.com/godlinchong/ai-chain"
 
 [features]
 
