@@ -60,10 +60,10 @@ Then, refer to the [documentation](https://docs.rs/ai-chain) and [examples](/ai-
 
 ## License 📄
 
-`llm-chain` is licensed under the [MIT License](/LICENSE).
+`ai-chain` is licensed under the [MIT License](/LICENSE).
 
 ## Connect with Us 🌐
 
-If you have any questions, suggestions, or feedback, feel free to open an issue or join our [community discord](https://discord.gg/kewN9Gtjt2). We're always excited to hear from our users and learn about your experiences with `llm-chain`.
+If you have any questions, suggestions, or feedback, feel free to open an issue or join our [community discord](https://discord.gg/kewN9Gtjt2). We're always excited to hear from our users and learn about your experiences with `ai-chain`.
 
-We hope you enjoy using `llm-chain` to unlock the full potential of Large Language Models in your projects. Happy coding! 🎉
+We hope you enjoy using `ai-chain` to unlock the full potential of Large Language Models in your projects. Happy coding! 🎉
