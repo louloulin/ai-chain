@@ -378,37 +378,37 @@ pub enum Opt {
     /// This is common to all models.
     RepeatPenaltyLastN(usize),
 
-    /// The TfsZ parameter for llm-chain-llama.
+    /// The TfsZ parameter for ai-chain-llama.
     TfsZ(f32),
-    /// The TypicalP parameter for llm-chain-llama.
+    /// The TypicalP parameter for ai-chain-llama.
     TypicalP(f32),
-    /// The Mirostat parameter for llm-chain-llama.
+    /// The Mirostat parameter for ai-chain-llama.
     Mirostat(i32),
-    /// The MirostatTau parameter for llm-chain-llama.
+    /// The MirostatTau parameter for ai-chain-llama.
     MirostatTau(f32),
-    /// The MirostatEta parameter for llm-chain-llama.
+    /// The MirostatEta parameter for ai-chain-llama.
     MirostatEta(f32),
-    /// Whether or not to penalize newline characters for llm-chain-llama.
+    /// Whether or not to penalize newline characters for ai-chain-llama.
     PenalizeNl(bool),
 
     /// The batch size for ai-chain-local.
     NBatch(usize),
-    /// The username for llm-chain-openai.
+    /// The username for ai-chain-openai.
     User(String),
     /// The type of the model.
     ModelType(String),
 
-    // The number of layers to be stored in GPU VRAM for llm-chain-llama.
+    // The number of layers to be stored in GPU VRAM for ai-chain-llama.
     NGpuLayers(i32),
-    // The GPU that should be used for scratch and small tensors for llm-chain-llama.
+    // The GPU that should be used for scratch and small tensors for ai-chain-llama.
     MainGpu(i32),
-    // How the layers should be split accross the available GPUs for llm-chain-llama.
+    // How the layers should be split accross the available GPUs for ai-chain-llama.
     TensorSplit(Option<Vec<f32>>),
-    // Only load the vocabulary for llm-chain-llama, no weights will be loaded.
+    // Only load the vocabulary for ai-chain-llama, no weights will be loaded.
     VocabOnly(bool),
-    // Use memory mapped files for llm-chain-llama where possible.
+    // Use memory mapped files for ai-chain-llama where possible.
     UseMmap(bool),
-    // Force the system to keep the model in memory for llm-chain-llama.
+    // Force the system to keep the model in memory for ai-chain-llama.
     UseMlock(bool),
 }
 

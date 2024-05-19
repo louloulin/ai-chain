@@ -1,6 +1,6 @@
 //! # Traits Module
 //!
-//! Welcome to the `traits` module! This is where llm-chain houses its public traits, which define the essential behavior of steps and executors. These traits are the backbone of our library, and they provide the foundation for creating and working with different models in llm-chain.
+//! Welcome to the `traits` module! This is where ai-chain houses its public traits, which define the essential behavior of steps and executors. These traits are the backbone of our library, and they provide the foundation for creating and working with different models in ai-chain.
 //!
 //! Here's a brief overview of the key concepts:
 //! - **Steps**: These are the building blocks that make up the chains. Steps define the parameters, including the prompt that is sent to the LLM (Large Language Model).

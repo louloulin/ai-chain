@@ -1,6 +1,6 @@
-//! # 🚀 llm-chain 🚀
+//! # 🚀 ai-chain 🚀
 //!
-//! `llm-chain` is the *ultimate* toolbox for developers looking to supercharge their applications with the power of Large Language Models (LLMs)! 🎉
+//! `ai-chain` is the *ultimate* toolbox for developers looking to supercharge their applications with the power of Large Language Models (LLMs)! 🎉
 //!
 //! This versatile crate lets you chain together LLMs, making it incredibly useful for:
 //! - Effortlessly summarizing lengthy documents 📚
@@ -10,13 +10,13 @@
 //! - LLaMA model support
 
 //!
-//! And that's not all! `llm-chain` is also your best friend when it comes to creating and managing prompts for LLMs. Say goodbye to hassle and bloated syntax! Quickly create and manage prompts with our intuitive templating system, and let `llm-chain` handle the rest! 🤩
+//! And that's not all! `ai-chain` is also your best friend when it comes to creating and managing prompts for LLMs. Say goodbye to hassle and bloated syntax! Quickly create and manage prompts with our intuitive templating system, and let `ai-chain` handle the rest! 🤩
 //!
-//! Keep in mind that this crate is a library, which means it doesn't include any LLMs out of the box. But fear not! We also offer the [llm-chain-openai](https://crates.io/crates/llm-chain-openai) crate, which brings the power of OpenAI's LLMs right to your fingertips! 🪄 We recommend starting with that crate to make the most of `llm-chain`. 😉
+//! Keep in mind that this crate is a library, which means it doesn't include any LLMs out of the box. But fear not! We also offer the [ai-chain-openai](https://crates.io/crates/ai-chain-openai) crate, which brings the power of OpenAI's LLMs right to your fingertips! 🪄 We recommend starting with that crate to make the most of `ai-chain`. 😉
 //!
-//! So, buckle up and dive into the amazing world of LLMs! Unlock the full potential of your applications with `llm-chain` and watch them soar! 🌈💥
+//! So, buckle up and dive into the amazing world of LLMs! Unlock the full potential of your applications with `ai-chain` and watch them soar! 🌈💥
 //!
-//! To help you get started, we've prepared a comprehensive [tutorial](https://docs.llm-chain.xyz/docs/category/tutorial) that will guide you through the process of using `llm-chain`. The tutorial covers everything from installation to advanced usage, so you'll be well-equipped to make the most of this powerful toolbox.
+//! To help you get started, we've prepared a comprehensive [tutorial](https://docs.ai-chain.xyz/docs/category/tutorial) that will guide you through the process of using `ai-chain`. The tutorial covers everything from installation to advanced usage, so you'll be well-equipped to make the most of this powerful toolbox.
 //!
 //! Happy coding, and may your LLM adventures be both exciting and productive! 🥳🚀
 //!

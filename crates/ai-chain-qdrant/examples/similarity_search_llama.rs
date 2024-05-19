@@ -12,7 +12,7 @@ use qdrant_client::{
     qdrant::{CreateCollection, Distance, VectorParams, VectorsConfig},
 };
 
-/// This example demonstrates using llm-chain-llama for generating
+/// This example demonstrates using ai-chain-llama for generating
 /// embeddings in combination with the Qdrant vector store.
 ///
 /// Usage:

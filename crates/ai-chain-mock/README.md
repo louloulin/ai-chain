@@ -1,4 +1,4 @@
-# llm-chain-mock
+# ai-chain-mock
 
 Mock LLM driver. Echos your prompt and options to you for easy debugging.
 

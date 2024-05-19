@@ -1,4 +1,4 @@
-llm-chain-local
+ai-chain-local
 ---
 
-This crate allows you to use `llm-chain` with a local [`llm`](https://github.com/rustformers/llm) backend.
+This crate allows you to use `ai-chain` with a local [`llm`](https://github.com/rustformers/llm) backend.

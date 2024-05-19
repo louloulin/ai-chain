@@ -221,7 +221,7 @@ impl StorableEntity for Chain {
     fn get_metadata() -> Vec<(String, String)> {
         let base = vec![(
             "chain-type".to_string(),
-            "llm-chain::chains::map_reduce::Chain".to_string(),
+            "ai-chain::chains::map_reduce::Chain".to_string(),
         )];
         base
     }
