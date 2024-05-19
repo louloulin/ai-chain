@@ -22,5 +22,4 @@
 //! Happy coding, and enjoy the amazing world of LLMs with llm-chain-openai! 🥳🚀P
 
 pub mod chatgpt;
-pub mod embeddings;
 pub use async_openai;

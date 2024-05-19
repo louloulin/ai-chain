@@ -7,18 +7,18 @@ use ai_chain::prompt::{ConversationTemplate, StringTemplate};
 use ai_chain::step::Step;
 use ai_chain::tools::tools::BashTool;
 use ai_chain::tools::ToolCollection;
-
+use ai_chain_moonshot::chatgpt;
 // A simple example generating a prompt with some tools.
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
-    env::set_var("OPENAI_API_BASE_URL", "https://api.moonshot.cn/v1");
-    let mut builder = Options::builder();
-    builder.add_option(Opt::Model(ModelRef::from_model_name("moonshot-v1-8k")));
-    let option = builder.build();
-    // Create a new ChatGPT executor.
-    let exec = executor!(chatgpt,option)?;
+    // env::set_var("OPENAI_API_BASE_URL", "https://api.moonshot.cn/v1");
+    // let mut builder = Options::builder();
+    // builder.add_option(Opt::Model(ModelRef::from_model_name("moonshot-v1-32k")));
+    // let option = builder.build();
+
+    let exec = executor!(mooonshot)?;
 
     let mut tool_collection = ToolCollection::new();
     tool_collection.add_tool(BashTool::new());

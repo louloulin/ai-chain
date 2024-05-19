@@ -4,18 +4,18 @@ use ai_chain::step::Step;
 use ai_chain::traits::Executor as ExecutorTrait;
 use ai_chain::{chains::sequential::Chain, prompt};
 use ai_chain::options::{ModelRef, Opt, Options};
-use ai_chain_openai::chatgpt::Executor;
+use ai_chain_moonshot::chatgpt::Executor;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create a new ChatGPT executor with the default settings
     env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
-    env::set_var("OPENAI_API_BASE_URL", "https://api.moonshot.cn/v1");
-    let mut builder = Options::builder();
-    builder.add_option(Opt::Model(ModelRef::from_model_name("moonshot-v1-8k")));
-    let option = builder.build();
-    // Create a new ChatGPT executor.
-    let exec = executor!(chatgpt,option)?;
+    // env::set_var("OPENAI_API_BASE_URL", "https://api.moonshot.cn/v1");
+    // let mut builder = Options::builder();
+    // builder.add_option(Opt::Model(ModelRef::from_model_name("moonshot-v1-32k")));
+    // let option = builder.build();
+
+    let exec = executor!(mooonshot)?;
 
     // Create a chain of steps with two prompts
     let chain: Chain = Chain::new(vec![

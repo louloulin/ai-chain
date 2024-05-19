@@ -38,10 +38,14 @@ pub struct Executor {
     options: Options,
 }
 
+const MOONSHOT_BASE_URL: &str = "https://api.moonshot.cn/v1";
+
 impl Default for Executor {
     fn default() -> Self {
         let options = Options::default();
-        let client = Arc::new(async_openai::Client::new());
+        let mut cfg = OpenAIConfig::new();
+        cfg = cfg.with_api_base(MOONSHOT_BASE_URL);
+        let client = Arc::new(async_openai::Client::with_config(cfg));
         Self { client, options }
     }
 }
@@ -57,7 +61,7 @@ impl Executor {
 
     fn get_model_from_invocation_options(&self, opts: &OptionsCascade) -> String {
         let Some(Opt::Model(model)) = opts.get(ai_chain::options::OptDiscriminants::Model) else {
-            return "gpt-3.5-turbo".to_string();
+            return "moonshot-v1-8k".to_string();
         };
         model.to_name()
     }
@@ -96,8 +100,11 @@ impl traits::Executor for Executor {
             cfg = cfg.with_org_id(org_id);
         }
 
-        if let Ok(base_url) = std::env::var("OPENAI_API_BASE_URL") {
-            cfg = cfg.with_api_base(base_url);
+        if let Ok(BASE_URL) = std::env::var("OPENAI_API_BASE_URL") {
+            cfg = cfg.with_api_base(BASE_URL);
+        }else {
+            cfg = cfg.with_api_base(MOONSHOT_BASE_URL);
+
         }
 
         let client = Arc::new(async_openai::Client::with_config(cfg));
@@ -177,7 +184,7 @@ fn num_tokens_from_messages(
 
     let bpe = get_bpe_from_tokenizer(tokenizer).map_err(|_| PromptTokensError::NotAvailable)?;
 
-    let (tokens_per_message, tokens_per_name) = if model.starts_with("gpt-3.5") {
+    let (tokens_per_message, tokens_per_name) = if model.starts_with("moonshot-v1-8k") {
         (
             4,  // every message follows <im_start>{role/name}\n{content}<im_end>\n
             -1, // if there's a name, the role is omitted
@@ -241,7 +248,7 @@ impl OpenAITokenizer {
     pub fn new(options: OptionsCascade) -> Self {
         let model_name = match options.get(ai_chain::options::OptDiscriminants::Model) {
             Some(Opt::Model(model_name)) => model_name.to_name(),
-            _ => "gpt-3.5-turbo".to_string(),
+            _ => "moonshot-v1-8k".to_string(),
         };
         Self::for_model_name(model_name)
     }
