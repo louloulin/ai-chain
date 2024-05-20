@@ -4,7 +4,7 @@ use thiserror::Error;
 
 #[derive(Debug, Error)]
 #[error(transparent)]
-pub enum OpenAIInnerError {
+pub enum OpenAICompatibleInnerError {
     #[error(transparent)]
     OpenAIError(#[from] OpenAIError),
     #[error(transparent)]

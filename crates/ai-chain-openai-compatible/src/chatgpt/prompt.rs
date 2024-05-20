@@ -12,7 +12,7 @@ use ai_chain::{
     prompt::{ChatMessage, ChatMessageCollection},
 };
 
-use super::error::OpenAIInnerError;
+use super::error::OpenAICompatibleInnerError;
 
 fn convert_role(role: &prompt::ChatRole) -> Role {
     match role {
@@ -35,7 +35,7 @@ fn convert_openai_role(role: &Role) -> prompt::ChatRole {
 
 fn format_chat_message(
     message: &prompt::ChatMessage<String>,
-) -> Result<ChatCompletionRequestMessage, OpenAIInnerError> {
+) -> Result<ChatCompletionRequestMessage, OpenAICompatibleInnerError> {
     let role = convert_role(message.role());
     let content = message.body().to_string();
     let msg = match role {
@@ -70,7 +70,7 @@ fn format_chat_message(
 
 pub fn format_chat_messages(
     messages: prompt::ChatMessageCollection<String>,
-) -> Result<Vec<async_openai::types::ChatCompletionRequestMessage>, OpenAIInnerError> {
+) -> Result<Vec<ChatCompletionRequestMessage>, OpenAICompatibleInnerError> {
     messages.iter().map(format_chat_message).collect()
 }
 
@@ -78,7 +78,7 @@ pub fn create_chat_completion_request(
     model: String,
     prompt: &Prompt,
     is_streaming: bool,
-) -> Result<CreateChatCompletionRequest, OpenAIInnerError> {
+) -> Result<CreateChatCompletionRequest, OpenAICompatibleInnerError> {
     let messages = format_chat_messages(prompt.to_chat())?;
     Ok(CreateChatCompletionRequestArgs::default()
         .model(model)

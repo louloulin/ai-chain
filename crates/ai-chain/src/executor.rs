@@ -62,7 +62,7 @@ macro_rules! executor {
     }};
     (mooonshot, $options:expr) => {{
         use ai_chain::traits::Executor;
-        ai_chain_moonshot::chatgpt::Executor::new_with_options($options)
+        ai_chain_glm::chatgpt::Executor::new_with_options($options)
     }};
     (gemma, $options:expr) => {{
         use ai_chain::traits::Executor;

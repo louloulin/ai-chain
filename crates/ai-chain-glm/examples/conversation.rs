@@ -1,18 +1,17 @@
 use std::env;
 use ai_chain::{chains::conversation::Chain, executor, parameters, prompt, step::Step};
-use ai_chain::traits::Executor;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create a new ChatGPT executor.
-    env::set_var("OPENAI_API_KEY", "sk-v2Xn0SRKnVVpBDx2soeAdp4LSo0DAyVCYNNqB7YfCRmTB8QP");
+    env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
     // env::set_var("OPENAI_API_BASE_URL", "https://api.moonshot.cn/v1");
     // let mut builder = Options::builder();
     // builder.add_option(Opt::Model(ModelRef::from_model_name("moonshot-v1-32k")));
     // let option = builder.build();
 
     let exec = executor!(mooonshot)?;
-    // let exec = ai_chain_moonshot::chatgpt::Executor::new()?;
+
     // Create a new Chain with the executor.
     let mut chain = Chain::new(
         prompt!(system: "You are a robot assistant for making personalized greetings."),

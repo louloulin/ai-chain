@@ -1,170 +1,24 @@
-use super::error::OpenAIInnerError;
-use super::prompt::completion_to_output;
-use super::prompt::stream_to_output;
-use async_openai::config::OpenAIConfig;
+
 use async_openai::types::ChatCompletionRequestMessage;
 
 use async_openai::types::ChatCompletionRequestUserMessageContent;
 use ai_chain::options::Opt;
-use ai_chain::options::Options;
 use ai_chain::options::OptionsCascade;
-use ai_chain::output::Output;
 use ai_chain::tokens::TokenCollection;
 use tiktoken_rs::{cl100k_base, get_bpe_from_tokenizer};
 use tiktoken_rs::tokenizer::get_tokenizer;
 
-use super::prompt::create_chat_completion_request;
-use super::prompt::format_chat_messages;
-use async_openai::error::OpenAIError;
-use ai_chain::prompt::Prompt;
 
 use ai_chain::tokens::PromptTokensError;
 use ai_chain::tokens::{Tokenizer, TokenizerError};
-use ai_chain::traits;
-use ai_chain::traits::{ExecutorCreationError, ExecutorError};
-
-use async_trait::async_trait;
-use ai_chain::tokens::TokenCount;
 
 use std::sync::Arc;
 use tiktoken_rs::tokenizer::Tokenizer::Cl100kBase;
+use crate::chatgpt::Config::MoonConfig;
 
-/// The `Executor` struct for the ChatGPT model. This executor uses the `async_openai` crate to communicate with the OpenAI API.
-#[derive(Clone)]
-pub struct Executor {
-    /// The client used to communicate with the OpenAI API.
-    client: Arc<async_openai::Client<OpenAIConfig>>,
-    /// The per-invocation options for this executor.
-    options: Options,
-}
 
-const MOONSHOT_BASE_URL: &str = "https://api.moonshot.cn/v1";
 
-impl Default for Executor {
-    fn default() -> Self {
-        let options = Options::default();
-        let mut cfg = OpenAIConfig::new();
-        cfg = cfg.with_api_base(MOONSHOT_BASE_URL);
-        let client = Arc::new(async_openai::Client::with_config(cfg));
-        Self { client, options }
-    }
-}
 
-impl Executor {
-    /// Creates a new `Executor` with the given client.
-    pub fn for_client(client: async_openai::Client<OpenAIConfig>, options: Options) -> Self {
-        use ai_chain::traits::Executor as _;
-        let mut exec = Self::new_with_options(options).unwrap();
-        exec.client = Arc::new(client);
-        exec
-    }
-
-    fn get_model_from_invocation_options(&self, opts: &OptionsCascade) -> String {
-        let Some(Opt::Model(model)) = opts.get(ai_chain::options::OptDiscriminants::Model) else {
-            return "moonshot-v1-8k".to_string();
-        };
-        model.to_name()
-    }
-
-    fn cascade<'a>(&'a self, opts: Option<&'a Options>) -> OptionsCascade<'a> {
-        let mut v: Vec<&'a Options> = vec![&self.options];
-        if let Some(o) = opts {
-            v.push(o);
-        }
-        OptionsCascade::from_vec(v)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-#[error(transparent)]
-pub enum Error {
-    OpenAIError(#[from] OpenAIError),
-}
-
-#[async_trait]
-impl traits::Executor for Executor {
-    type StepTokenizer<'a> = OpenAITokenizer;
-    /// Creates a new `Executor` with the given options.
-    ///
-    /// if the `OPENAI_ORG_ID` environment variable is present, it will be used as the org_ig for the OpenAI client.
-    fn new_with_options(options: Options) -> Result<Self, ExecutorCreationError> {
-        let mut cfg = OpenAIConfig::new();
-
-        let opts = OptionsCascade::new().with_options(&options);
-
-        if let Some(Opt::ApiKey(api_key)) = opts.get(ai_chain::options::OptDiscriminants::ApiKey) {
-            cfg = cfg.with_api_key(api_key)
-        }
-
-        if let Ok(org_id) = std::env::var("OPENAI_ORG_ID") {
-            cfg = cfg.with_org_id(org_id);
-        }
-
-        if let Ok(BASE_URL) = std::env::var("OPENAI_API_BASE_URL") {
-            cfg = cfg.with_api_base(BASE_URL);
-        }else {
-            cfg = cfg.with_api_base(MOONSHOT_BASE_URL);
-
-        }
-
-        let client = Arc::new(async_openai::Client::with_config(cfg));
-        Ok(Self { client, options })
-    }
-
-    async fn execute(&self, options: &Options, prompt: &Prompt) -> Result<Output, ExecutorError> {
-        let opts = self.cascade(Some(options));
-        let client = self.client.clone();
-        let model = self.get_model_from_invocation_options(&opts);
-        let input = create_chat_completion_request(model, prompt, opts.is_streaming()).unwrap();
-        if opts.is_streaming() {
-            let res = async move { client.chat().create_stream(input).await }
-                .await
-                .map_err(|e| ExecutorError::InnerError(e.into()))?;
-            Ok(stream_to_output(res))
-        } else {
-            let res = async move { client.chat().create(input).await }
-                .await
-                .map_err(|e| ExecutorError::InnerError(e.into()))?;
-            Ok(completion_to_output(res))
-        }
-    }
-
-    fn tokens_used(
-        &self,
-        opts: &Options,
-        prompt: &Prompt,
-    ) -> Result<TokenCount, PromptTokensError> {
-        let opts_cas = self.cascade(Some(opts));
-        let model = self.get_model_from_invocation_options(&opts_cas);
-        let messages = format_chat_messages(prompt.to_chat()).map_err(|e| match e {
-            OpenAIInnerError::StringTemplateError(e) => PromptTokensError::PromptFormatFailed(e),
-            _ => PromptTokensError::UnableToCompute,
-        })?;
-        let tokens_used = num_tokens_from_messages(&model, &messages)
-            .map_err(|_| PromptTokensError::NotAvailable)?;
-
-        Ok(TokenCount::new(
-            self.max_tokens_allowed(opts),
-            tokens_used as i32,
-        ))
-    }
-    /// Get the context size from the model or return default context size
-    fn max_tokens_allowed(&self, opts: &Options) -> i32 {
-        let opts_cas = self.cascade(Some(opts));
-        let model = self.get_model_from_invocation_options(&opts_cas);
-        tiktoken_rs::model::get_context_size(&model)
-            .try_into()
-            .unwrap_or(4096)
-    }
-
-    fn answer_prefix(&self, _prompt: &Prompt) -> Option<String> {
-        None
-    }
-
-    fn get_tokenizer(&self, options: &Options) -> Result<OpenAITokenizer, TokenizerError> {
-        Ok(OpenAITokenizer::new(self.cascade(Some(options))))
-    }
-}
 
 fn num_tokens_from_messages(
     model: &str,
@@ -243,6 +97,8 @@ fn num_tokens_from_messages(
 pub struct OpenAITokenizer {
     model_name: String,
 }
+
+pub type Executor = ai_chain_openai_compatible::chatgpt::Executor<MoonConfig>;
 
 impl OpenAITokenizer {
     pub fn new(options: OptionsCascade) -> Self {

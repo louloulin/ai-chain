@@ -4,5 +4,10 @@ mod model;
 mod prompt;
 mod config;
 mod client;
+mod executor;
 
+pub use executor::*;
 pub use model::ModelTrait;
+pub use prompt::*;
+pub use config::*;
+pub use error::*;
