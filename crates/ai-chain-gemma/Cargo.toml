@@ -16,7 +16,7 @@ repository = "https://github.com/godlinchong/ai-chain/"
 
 [dependencies]
 async-trait.workspace = true
-ai-chain = {path = "../ai-chain", version="0.13.0"}
+ai-chain = {path = "../ai-chain", version="0.14.0"}
 ai-chain-gemma-sys = {path = "../ai-chain-gemma-sys", version="0.1.0"}
 tokio.workspace = true
 thiserror.workspace = true

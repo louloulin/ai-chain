@@ -12,7 +12,7 @@ use strum_macros::EnumString;
 /// # Example
 ///
 /// ```
-/// use ai_chain_openai::chatgpt::Model;
+/// use ai_chain_moonshot::chatgpt::Model;
 ///
 /// let turbo_model = Model::MoonshotV18K;
 /// let custom_model = Model::Other("your_custom_model_name".to_string());

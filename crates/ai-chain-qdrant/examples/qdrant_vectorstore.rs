@@ -31,6 +31,7 @@ async fn main() {
                             distance: Distance::Cosine.into(),
                             hnsw_config: None,
                             quantization_config: None,
+                            datatype: None,
                         },
                     )),
                 }),

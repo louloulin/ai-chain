@@ -1,0 +1,29 @@
+[package]
+name = "ai-chain-surrealdb"
+version = "0.14.0"
+edition = "2021"
+description = "For using Qdrant with ai-chain"
+license = "MIT"
+keywords = ["llm", "langchain", "qdrant", "chain"]
+categories = ["science"]
+authors = ["linchong <729883852@qq.com>"]
+readme = "README.md"
+repository = "https://github.com/godlinchong/ai-chain/"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+ai-chain = { path = "../ai-chain", version = "0.14.0", default-features = false }
+qdrant-client = "1.1.2"
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+uuid = "1.6.1"
+
+[dev-dependencies]
+ai-chain-openai = { path = "../ai-chain-openai" }
+tokio.workspace = true
+serde_yaml.workspace = true
+
