@@ -53,7 +53,6 @@ ai-chain-openai = "0.14.0"
 
 ```rust
 env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
-let exec = executor!(mooonshot)?;
 let exec = executor!()?;
 let res = prompt!(
 "You are a robot assistant for making personalized greetings",
@@ -82,7 +81,6 @@ ai-chain-moonshot = "0.14.0"
 ```rust
 env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
 let exec = executor!(mooonshot)?;
-let exec = executor!()?;
 let res = prompt!(
     "You are a robot assistant for making personalized greetings",
     "Make a personalized greeting for Joe"
