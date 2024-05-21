@@ -1,6 +1,6 @@
 [package]
 name = "ai-chain-macros"
-version = "0.14.0"
+version = "0.14.1"
 edition = "2021"
 license = "MIT"
 description = "Set of macros for use with ai-chain"

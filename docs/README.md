@@ -45,8 +45,8 @@ ai-chain-openai
 
 ```toml
 [dependencies]
-ai-chain = "0.14.0"
-ai-chain-openai = "0.14.0"
+ai-chain = "0.14.1"
+ai-chain-openai = "0.14.1"
 ```
 
 * coding
@@ -72,8 +72,8 @@ ai-chain-moonshot
 
 ```toml
 [dependencies]
-ai-chain = "0.14.0"
-ai-chain-moonshot = "0.14.0"
+ai-chain = "0.14.1"
+ai-chain-moonshot = "0.14.1"
 ```
 
 * coding
@@ -98,8 +98,8 @@ ai-chain-glm
 
 ```toml
 [dependencies]
-ai-chain = "0.14.0"
-ai-chain-glm = "0.14.0"
+ai-chain = "0.14.1"
+ai-chain-glm = "0.14.1"
 ```
 
 * coding
