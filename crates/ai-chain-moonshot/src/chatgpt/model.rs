@@ -1,6 +1,6 @@
 use ai_chain::options::{ModelRef, Opt};
 use serde::{Deserialize, Serialize};
-use strum_macros::EnumString;
+use strum_macros::{EnumIter,EnumString};
 
 /// The `Model` enum represents the available ChatGPT models that you can use through the OpenAI
 /// API.
@@ -18,7 +18,7 @@ use strum_macros::EnumString;
 /// let custom_model = Model::Other("your_custom_model_name".to_string());
 /// ```
 
-#[derive(Debug,Default, Clone, Serialize, Deserialize, EnumString, PartialEq, Eq)]
+#[derive(EnumIter,Debug,Default, Clone, Serialize, Deserialize, EnumString, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum Model {
     /// A high-performance and versatile model from the "moonshot" series.
@@ -54,6 +54,8 @@ impl ToString for Model {
     }
 }
 
+
+
 /// Conversion from Model to ModelRef
 impl From<Model> for ModelRef {
     fn from(value: Model) -> Self {
@@ -71,13 +73,16 @@ impl From<Model> for Opt {
 #[cfg(test)]
 mod tests {
     use std::str::FromStr;
+    use strum::IntoEnumIterator;
 
     use super::*;
 
     // Tests for FromStr
     #[test]
     fn test_from_str() -> Result<(), Box<dyn std::error::Error>> {
-
+        // Model::iter()
+        let model_names =  Model::iter().map(|model| model.to_string()).collect::<Vec<String>>();
+        println!("{:?}", model_names);
         Ok(())
     }
 
