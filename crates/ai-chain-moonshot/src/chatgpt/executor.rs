@@ -7,10 +7,6 @@ use ai_chain_openai_compatible::chatgpt::OAIConfig;
 use crate::chatgpt::Model;
 
 
-
-
-
-
 const MOONSHOT_BASE_URL: &str = "https://api.moonshot.cn/v1";
 pub type Executor = ai_chain_openai_compatible::chatgpt::Executor<MoonConfig>;
 

@@ -41,9 +41,9 @@ pub struct Executor<C: OAIConfig> {
 }
 
 
-impl<OConfig: OAIConfig> Executor<OConfig> {
+impl<C: OAIConfig> Executor<C> {
     /// Creates a new `Executor` with the given client.
-    pub fn for_client(client: async_openai::Client<OConfig>, options: Options) -> Self {
+    pub fn for_client(client: async_openai::Client<C>, options: Options) -> Self {
         use ai_chain::traits::Executor as _;
         let mut exec = Self::new_with_options(options).unwrap();
         exec.client = Arc::new(client);
@@ -52,7 +52,7 @@ impl<OConfig: OAIConfig> Executor<OConfig> {
 
     fn get_model_from_invocation_options(&self, opts: &OptionsCascade) -> String {
         let Some(Opt::Model(model)) = opts.get(ai_chain::options::OptDiscriminants::Model) else {
-            return "moonshot-v1-8k".to_string();
+            return C::model_config().0
         };
         model.to_name()
     }

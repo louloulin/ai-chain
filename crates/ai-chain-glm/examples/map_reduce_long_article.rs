@@ -13,7 +13,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // builder.add_option(Opt::Model(ModelRef::from_model_name("moonshot-v1-32k")));
     // let option = builder.build();
 
-    let exec = executor!(mooonshot)?;
+    let exec = executor!(glm)?;
 
     // Create the "map" step to summarize an article into bullet points
     let map_prompt = Step::for_prompt_template(prompt!(

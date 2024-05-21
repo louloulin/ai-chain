@@ -4,8 +4,7 @@ use ai_chain::serialization::StorableEntity;
 use ai_chain::step::Step;
 use ai_chain::traits::Executor as ExecutorTrait;
 use ai_chain::{executor, parameters, prompt};
-use ai_chain::options::{ModelRef, Opt, Options};
-use ai_chain_glm::chatgpt::Executor;
+
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -15,7 +14,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // builder.add_option(Opt::Model(ModelRef::from_model_name("moonshot-v1-32k")));
     // let option = builder.build();
 
-    let exec = executor!(mooonshot)?;
+    let exec = executor!(glm)?;
     let mut path = std::env::temp_dir();
     path.push("chain-from-yaml.yaml");
     let path = path.to_str().unwrap();

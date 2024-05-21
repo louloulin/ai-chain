@@ -2,5 +2,5 @@
 mod executor;
 mod model;
 
-pub use executor::{Error, Executor};
+pub use executor::*;
 pub use model::Model;

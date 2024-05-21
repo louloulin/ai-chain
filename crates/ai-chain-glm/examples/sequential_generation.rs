@@ -15,7 +15,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // builder.add_option(Opt::Model(ModelRef::from_model_name("moonshot-v1-32k")));
     // let option = builder.build();
 
-    let exec = executor!(mooonshot)?;
+    let exec = executor!(glm)?;
 
     // Create a chain of steps with two prompts
     let chain: Chain = Chain::new(vec![

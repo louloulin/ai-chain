@@ -1,6 +1,6 @@
 use ai_chain::options::{ModelRef, Opt};
 use serde::{Deserialize, Serialize};
-use strum_macros::EnumString;
+use strum_macros::{EnumIter,EnumString};
 
 /// The `Model` enum represents the available ChatGPT models that you can use through the OpenAI
 /// API.
@@ -14,21 +14,22 @@ use strum_macros::EnumString;
 /// ```
 /// use ai_chain_glm::chatgpt::Model;
 ///
-/// let turbo_model = Model::MoonshotV18K;
+/// let turbo_model = Model::default();
 /// let custom_model = Model::Other("your_custom_model_name".to_string());
 /// ```
 
-#[derive(Debug,Default, Clone, Serialize, Deserialize, EnumString, PartialEq, Eq)]
+#[derive(EnumIter,Debug,Default, Clone, Serialize, Deserialize, EnumString, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum Model {
     /// A high-performance and versatile model from the "moonshot" series.
-    #[strum(serialize = "moonshot-v1-8k")]
+    #[strum(serialize = "glm-4")]
     #[default]
-    MoonshotV18K,
-    #[strum(serialize = "moonshot-v1-16k")]
-    MoonshotV116K,
-    #[strum(serialize = "moonshot-v1-32k")]
-    MoonshotV132K,
+    GLM4,
+    #[strum(serialize = "glm-4v")]
+    GLM4V,
+    #[strum(serialize = "glm-3-turbo")]
+    GLM3Turbo,
+
 
     // ... 你可以继续添加更多的 "moonshot" 模型 ...
 
@@ -41,18 +42,19 @@ impl Model {
 
 }
 
-/// The `Model` enum implements the `ToString` trait, allowing you to easily convert it to a string.
 impl ToString for Model {
     fn to_string(&self) -> String {
         match &self {
-            Model::MoonshotV18K => "moonshot-v1-8k".to_string(),
-            Model::MoonshotV116K => "moonshot-v1-16k".to_string(),
-            Model::MoonshotV132K => "moonshot-v1-32k".to_string(),
+            Model::GLM4 => "glm-4".to_string(),
+            Model::GLM4V => "glm-4v".to_string(),
+            Model::GLM3Turbo => "glm-3-turbo".to_string(),
 
             Model::Other(model) => model.to_string(),
         }
     }
 }
+
+
 
 /// Conversion from Model to ModelRef
 impl From<Model> for ModelRef {
@@ -71,13 +73,16 @@ impl From<Model> for Opt {
 #[cfg(test)]
 mod tests {
     use std::str::FromStr;
+    use strum::IntoEnumIterator;
 
     use super::*;
 
     // Tests for FromStr
     #[test]
     fn test_from_str() -> Result<(), Box<dyn std::error::Error>> {
-
+        // Model::iter()
+        let model_names =  Model::iter().map(|model| model.to_string()).collect::<Vec<String>>();
+        println!("{:?}", model_names);
         Ok(())
     }
 

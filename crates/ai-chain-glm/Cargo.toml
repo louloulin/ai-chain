@@ -25,6 +25,8 @@ strum_macros = "0.24"
 thiserror.workspace = true
 tiktoken-rs = { version = "0.5.7" }
 tokio.workspace = true
+reqwest = "0.11.27"
+secrecy="0.8.0"
 
 [dev-dependencies]
 tokio = "1.28.2"

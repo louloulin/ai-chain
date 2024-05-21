@@ -18,7 +18,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // builder.add_option(Opt::Model(ModelRef::from_model_name("moonshot-v1-32k")));
     // let option = builder.build();
 
-    let exec = executor!(mooonshot)?;
+    let exec = executor!(glm)?;
 
     let mut tool_collection = ToolCollection::new();
     tool_collection.add_tool(BashTool::new());
