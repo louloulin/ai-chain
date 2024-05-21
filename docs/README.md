@@ -4,6 +4,13 @@
 `ai-chain` is a collection of Rust crates designed to help you create advanced LLM applications such as chatbots, agents, and more. As a comprehensive LLM-Ops platform we have strong support for both cloud and locally-hosted LLMs. We also provide robust support for prompt templates and chaining together prompts in multi-step chains, enabling complex tasks that LLMs can't handle in a single step. We also provide vector store integrations making it easy to give your model long-term memory and subject matter knowledge. This empowers you to build sophisticated applications.
 
 
+
+### changelog 2024-05-21 0.14.1
+* improve openai-compatible api
+* add glm llm
+* upgrade moonshot llm
+
+
 ## Examples 💡
 
 To help you get started, here is an example demonstrating how to use `ai-chain`. You can find more examples in the [examples folder](/crates/ai-chain-openai/examples) in the repository.
