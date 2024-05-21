@@ -32,10 +32,10 @@ use crate::chatgpt::OpenAICompatibleInnerError;
 
 /// The `Executor` struct for the ChatGPT model. This executor uses the `async_openai` crate to communicate with the OpenAI API.
 #[derive(Clone)]
-pub struct Executor<OConfig: OAIConfig> {
-    config: OConfig,
+pub struct Executor<C: OAIConfig> {
+    config: C,
     /// The client used to communicate with the OpenAI API.
-    client: Arc<async_openai::Client<OConfig>>,
+    client: Arc<async_openai::Client<C>>,
     /// The per-invocation options for this executor.
     options: Options,
 }
@@ -257,7 +257,8 @@ impl<C: OAIConfig> OpenAITokenizer<C> {
 
     fn get_bpe_from_model(&self) -> Result<tiktoken_rs::CoreBPE, PromptTokensError> {
         use tiktoken_rs::get_bpe_from_model;
-        if self.model_name.starts_with("moonshot") {
+        let (_, config_params) = C::model_config();
+        if config_params.iter().any(|x| self.model_name.starts_with(x)) {
             return cl100k_base().map_err(|_| PromptTokensError::NotAvailable);
         }
         get_bpe_from_model(&self.model_name).map_err(|_| PromptTokensError::NotAvailable)
