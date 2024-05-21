@@ -33,6 +33,7 @@ use crate::chatgpt::OpenAICompatibleInnerError;
 /// The `Executor` struct for the ChatGPT model. This executor uses the `async_openai` crate to communicate with the OpenAI API.
 #[derive(Clone)]
 pub struct Executor<OConfig: OAIConfig> {
+    config: OConfig,
     /// The client used to communicate with the OpenAI API.
     client: Arc<async_openai::Client<OConfig>>,
     /// The per-invocation options for this executor.
@@ -76,11 +77,85 @@ impl<OConfig: OAIConfig> Executor<OConfig> {
     fn create_config() -> OConfig {
         OConfig::create()
     }
+
+    fn num_tokens_from_messages(
+        model: &str,
+        messages: &[ChatCompletionRequestMessage],
+    ) -> Result<usize, PromptTokensError> {
+        let mut tokenizer = Cl100kBase;
+        let (_, config_params) = OConfig::model_config();
+        if config_params.iter().any(|x| model.starts_with(x)) {
+            tokenizer = Cl100kBase;
+        } else {
+            let tokenizer1 = get_tokenizer(model).ok_or_else(|| PromptTokensError::NotAvailable)?;
+            if tokenizer1 != Cl100kBase {
+                return Err(PromptTokensError::NotAvailable);
+            }
+            tokenizer = tokenizer1;
+        }
+
+        let bpe = get_bpe_from_tokenizer(tokenizer).map_err(|_| PromptTokensError::NotAvailable)?;
+
+        let (tokens_per_message, tokens_per_name) = if model.starts_with("gpt-3.5") {
+            (
+                4,  // every message follows <im_start>{role/name}\n{content}<im_end>\n
+                -1, // if there's a name, the role is omitted
+            )
+        } else {
+            (3, 1)
+        };
+
+        let mut num_tokens: i32 = 0;
+        for message in messages {
+            let (role, content, name) = match message {
+                ChatCompletionRequestMessage::System(x) => (
+                    x.role.to_string(),
+                    x.content.to_owned().unwrap_or_default(),
+                    None,
+                ),
+                ChatCompletionRequestMessage::User(x) => (
+                    x.role.to_string(),
+                    x.content
+                        .as_ref()
+                        .and_then(|x| match x {
+                            ChatCompletionRequestUserMessageContent::Text(x) => Some(x.to_string()),
+                            _ => None,
+                        })
+                        .unwrap_or_default(),
+                    None,
+                ),
+                ChatCompletionRequestMessage::Assistant(x) => (
+                    x.role.to_string(),
+                    x.content.to_owned().unwrap_or_default(),
+                    None,
+                ),
+                ChatCompletionRequestMessage::Tool(x) => (
+                    x.role.to_string(),
+                    x.content.to_owned().unwrap_or_default(),
+                    None,
+                ),
+                ChatCompletionRequestMessage::Function(x) => (
+                    x.role.to_string(),
+                    x.content.to_owned().unwrap_or_default(),
+                    None,
+                ),
+            };
+            num_tokens += tokens_per_message;
+            num_tokens += bpe.encode_with_special_tokens(&role).len() as i32;
+            num_tokens += bpe.encode_with_special_tokens(&content).len() as i32;
+            if let Some(name) = name {
+                num_tokens += bpe.encode_with_special_tokens(name).len() as i32;
+                num_tokens += tokens_per_name;
+            }
+        }
+        num_tokens += 3; // every reply is primed with <|start|>assistant<|message|>
+        Ok(num_tokens as usize)
+    }
 }
 
 #[async_trait]
 impl<OConfig: OAIConfig> traits::Executor for Executor<OConfig> {
-    type StepTokenizer<'a> = OpenAITokenizer;
+    type StepTokenizer<'a> = OpenAITokenizer<OConfig>;
     /// Creates a new `Executor` with the given options.
     ///
     /// if the `OPENAI_ORG_ID` environment variable is present, it will be used as the org_ig for the OpenAI client.
@@ -92,14 +167,17 @@ impl<OConfig: OAIConfig> traits::Executor for Executor<OConfig> {
         if let Some(Opt::ApiKey(api_key)) = opts.get(ai_chain::options::OptDiscriminants::ApiKey) {
             cfg = cfg.with_api_key(api_key)
         }
-
-
         if let Ok(base_url) = std::env::var("OPENAI_API_BASE_URL") {
             cfg = cfg.with_api_base(base_url);
         }
+        let config = cfg.clone();
 
         let client = Arc::new(async_openai::Client::with_config(cfg));
-        Ok(Self { client, options })
+        Ok(Self {
+            config,
+            client,
+            options,
+        })
     }
 
     async fn execute(&self, options: &Options, prompt: &Prompt) -> Result<Output, ExecutorError> {
@@ -131,7 +209,7 @@ impl<OConfig: OAIConfig> traits::Executor for Executor<OConfig> {
             OpenAICompatibleInnerError::StringTemplateError(e) => PromptTokensError::PromptFormatFailed(e),
             _ => PromptTokensError::UnableToCompute,
         })?;
-        let tokens_used = num_tokens_from_messages(&model, &messages)
+        let tokens_used = Self::num_tokens_from_messages(&model, &messages)
             .map_err(|_| PromptTokensError::NotAvailable)?;
 
         Ok(TokenCount::new(
@@ -152,101 +230,29 @@ impl<OConfig: OAIConfig> traits::Executor for Executor<OConfig> {
         None
     }
 
-    fn get_tokenizer(&self, options: &Options) -> Result<OpenAITokenizer, TokenizerError> {
+    fn get_tokenizer(&self, options: &Options) -> Result<OpenAITokenizer<OConfig>, TokenizerError> {
         Ok(OpenAITokenizer::new(self.cascade(Some(options))))
     }
 }
 
-fn num_tokens_from_messages(
-    model: &str,
-    messages: &[ChatCompletionRequestMessage],
-) -> Result<usize, PromptTokensError> {
-    let mut tokenizer = Cl100kBase;
 
-    if model.starts_with("moonshot") {
-        tokenizer = Cl100kBase;
-    } else {
-        let tokenizer1 = get_tokenizer(model).ok_or_else(|| PromptTokensError::NotAvailable)?;
-        if tokenizer1 != Cl100kBase {
-            return Err(PromptTokensError::NotAvailable);
-        }
-        tokenizer = tokenizer1;
-    }
-
-    let bpe = get_bpe_from_tokenizer(tokenizer).map_err(|_| PromptTokensError::NotAvailable)?;
-
-    let (tokens_per_message, tokens_per_name) = if model.starts_with("gpt-3.5") {
-        (
-            4,  // every message follows <im_start>{role/name}\n{content}<im_end>\n
-            -1, // if there's a name, the role is omitted
-        )
-    } else {
-        (3, 1)
-    };
-
-    let mut num_tokens: i32 = 0;
-    for message in messages {
-        let (role, content, name) = match message {
-            ChatCompletionRequestMessage::System(x) => (
-                x.role.to_string(),
-                x.content.to_owned().unwrap_or_default(),
-                None,
-            ),
-            ChatCompletionRequestMessage::User(x) => (
-                x.role.to_string(),
-                x.content
-                    .as_ref()
-                    .and_then(|x| match x {
-                        ChatCompletionRequestUserMessageContent::Text(x) => Some(x.to_string()),
-                        _ => None,
-                    })
-                    .unwrap_or_default(),
-                None,
-            ),
-            ChatCompletionRequestMessage::Assistant(x) => (
-                x.role.to_string(),
-                x.content.to_owned().unwrap_or_default(),
-                None,
-            ),
-            ChatCompletionRequestMessage::Tool(x) => (
-                x.role.to_string(),
-                x.content.to_owned().unwrap_or_default(),
-                None,
-            ),
-            ChatCompletionRequestMessage::Function(x) => (
-                x.role.to_string(),
-                x.content.to_owned().unwrap_or_default(),
-                None,
-            ),
-        };
-        num_tokens += tokens_per_message;
-        num_tokens += bpe.encode_with_special_tokens(&role).len() as i32;
-        num_tokens += bpe.encode_with_special_tokens(&content).len() as i32;
-        if let Some(name) = name {
-            num_tokens += bpe.encode_with_special_tokens(name).len() as i32;
-            num_tokens += tokens_per_name;
-        }
-    }
-    num_tokens += 3; // every reply is primed with <|start|>assistant<|message|>
-    Ok(num_tokens as usize)
-}
-
-pub struct OpenAITokenizer {
+pub struct OpenAITokenizer<C> {
     model_name: String,
+    config: Option<C>,
 }
 
-impl OpenAITokenizer {
+impl<C: OAIConfig> OpenAITokenizer<C> {
     pub fn new(options: OptionsCascade) -> Self {
         let model_name = match options.get(ai_chain::options::OptDiscriminants::Model) {
             Some(Opt::Model(model_name)) => model_name.to_name(),
-            _ => "gpt-3.5-turbo".to_string(),
+            _ => C::model_config().0
         };
         Self::for_model_name(model_name)
     }
     /// Creates an OpenAITokenizer for the passed in model name
     pub fn for_model_name<S: Into<String>>(model_name: S) -> Self {
         let model_name: String = model_name.into();
-        Self { model_name }
+        Self { model_name, config: None }
     }
 
     fn get_bpe_from_model(&self) -> Result<tiktoken_rs::CoreBPE, PromptTokensError> {
@@ -258,7 +264,7 @@ impl OpenAITokenizer {
     }
 }
 
-impl Tokenizer for OpenAITokenizer {
+impl<C: OAIConfig> Tokenizer for OpenAITokenizer<C> {
     fn tokenize_str(&self, doc: &str) -> Result<TokenCollection, TokenizerError> {
         // if model.starts_with("moonshot") {
         //     tokenizer = Cl100kBase;

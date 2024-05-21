@@ -1,10 +1,12 @@
 use async_openai::config::{Config, OPENAI_API_BASE, OPENAI_BETA_HEADER, OPENAI_ORGANIZATION_HEADER, OpenAIConfig};
 use reqwest::header::{HeaderMap, AUTHORIZATION};
 use secrecy::{ExposeSecret, Secret};
+use ai_chain::tokens::Tokenizer;
 use ai_chain_openai_compatible::chatgpt::OAIConfig;
+
 const MOONSHOT_BASE_URL: &str = "https://api.moonshot.cn/v1";
 
-pub struct  MoonConfig{
+pub struct MoonConfig {
     api_base: String,
     api_key: Secret<String>,
 }
@@ -66,7 +68,7 @@ impl Clone for MoonConfig {
     }
 }
 
-impl OAIConfig for MoonConfig{
+impl OAIConfig for MoonConfig {
     fn create() -> Self {
         Self::default()
     }
@@ -82,4 +84,11 @@ impl OAIConfig for MoonConfig{
         self.clone()
     }
 
+    fn model_config() -> (String, Vec<String>) {
+        return ("moonshot-v1-8k".to_string(),vec!["moonshot".to_string()]);
+    }
+
+    fn tokenizer(&self) -> Box<dyn Tokenizer> {
+        todo!()
+    }
 }
