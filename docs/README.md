@@ -13,7 +13,7 @@
 * add qwen model support
 * other bug fix
 
-### changelog 2024-05-21 0.14.1
+### changelog 2024-05-21 0.14.2
 * improve openai-compatible api
 * add glm llm
 * upgrade moonshot llm
@@ -60,8 +60,8 @@ ai-chain-openai
 
 ```toml
 [dependencies]
-ai-chain = "0.14.1"
-ai-chain-openai = "0.14.1"
+ai-chain = "0.14.2"
+ai-chain-openai = "0.14.2"
 ```
 
 * coding
@@ -87,8 +87,8 @@ ai-chain-moonshot
 
 ```toml
 [dependencies]
-ai-chain = "0.14.1"
-ai-chain-moonshot = "0.14.1"
+ai-chain = "0.14.2"
+ai-chain-moonshot = "0.14.2"
 ```
 
 * coding
@@ -113,8 +113,8 @@ ai-chain-glm
 
 ```toml
 [dependencies]
-ai-chain = "0.14.1"
-ai-chain-glm = "0.14.1"
+ai-chain = "0.14.2"
+ai-chain-glm = "0.14.2"
 ```
 
 * coding
@@ -139,8 +139,8 @@ ai-chain-qwen
 
 ```toml
 [dependencies]
-ai-chain = "0.14.1"
-ai-chain-qwen = "0.14.1"
+ai-chain = "0.14.2"
+ai-chain-qwen = "0.14.2"
 ```
 
 * coding

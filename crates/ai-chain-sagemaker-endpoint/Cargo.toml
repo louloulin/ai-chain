@@ -1,6 +1,6 @@
 [package]
 name = "ai-chain-sagemaker-endpoint"
-version = "0.14.1"
+version = "0.14.2"
 edition = "2021"
 description = "Use `ai-chain` with a SageMaker Endpoint backend."
 license = "MIT"
@@ -16,7 +16,7 @@ async-trait = "0.1.68"
 aws-config = "0.56.0"
 aws-sdk-sagemakerruntime = "0.34.0"
 futures = "0.3.28"
-ai-chain = { path = "../ai-chain", version = "0.14.1", default-features = false }
+ai-chain = { path = "../ai-chain", version = "0.14.2", default-features = false }
 serde = "1.0.183"
 serde_json = "1.0.104"
 serde_with = "3.2.0"
