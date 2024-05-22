@@ -72,6 +72,14 @@ macro_rules! executor {
         use ai_chain::traits::Executor;
         ai_chain_glm::chatgpt::Executor::new_with_options($options)
     }};
+    (qwen) => {{
+        use ai_chain::traits::Executor;
+        ai_chain_qwen::chatgpt::Executor::new()
+    }};
+    (qwen, $options:expr) => {{
+        use ai_chain::traits::Executor;
+        ai_chain_qwen::chatgpt::Executor::new_with_options($options)
+    }};
     (gemma, $options:expr) => {{
         use ai_chain::traits::Executor;
         ai_chain_gemma::Executor::new_with_options($options)
@@ -104,8 +112,12 @@ macro_rules! executor {
     use ai_chain::traits::Executor;
     wasmtime_executor::Executor::new_with_options($options)
     }};
-    (custom_model, $model:expr, $options:expr) => {{
+    (custom, $model:ident) => {{
     use ai_chain::traits::Executor;
-    $model::Executor::new_with_options($options)
+    $model::chatgpt::Executor::new()
+    }};
+    (custom, $model:ident, $options:expr) => {{
+    use ai_chain::traits::Executor;
+    $model::chatgpt::Executor::new_with_options($options)
     }};
 }

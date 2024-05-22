@@ -1,26 +1,25 @@
-use async_openai::config::{Config, OPENAI_API_BASE, OPENAI_BETA_HEADER};
-use reqwest::header::{AUTHORIZATION, HeaderMap};
+use async_openai::config::{Config, OPENAI_API_BASE, OPENAI_BETA_HEADER, OPENAI_ORGANIZATION_HEADER, OpenAIConfig};
+use reqwest::header::{HeaderMap, AUTHORIZATION};
 use secrecy::{ExposeSecret, Secret};
 use strum::IntoEnumIterator;
-
 use ai_chain::tokens::Tokenizer;
 use ai_chain_openai_compatible::chatgpt::OAIConfig;
-
 use crate::chatgpt::Model;
 
-const GLM_BASE_URL: &str = "https://open.bigmodel.cn/api/paas/v4/";
-pub type Executor = ai_chain_openai_compatible::chatgpt::Executor<GLMConfig>;
 
-pub struct GLMConfig {
+const QWEN_BASE_URL: &str = "https://dashscope.aliyuncs.com/compatible-mode/v1";
+pub type Executor = ai_chain_openai_compatible::chatgpt::Executor<QwenConfig>;
+
+pub struct QwenConfig {
     api_base: String,
     api_key: Secret<String>,
 }
 
 
-impl Default for GLMConfig {
+impl Default for QwenConfig {
     fn default() -> Self {
         Self {
-            api_base: GLM_BASE_URL.to_string(),
+            api_base: QWEN_BASE_URL.to_string(),
             api_key: std::env::var("OPENAI_API_KEY")
                 .unwrap_or_else(|_| "".to_string())
                 .into(),
@@ -28,7 +27,7 @@ impl Default for GLMConfig {
     }
 }
 
-impl Config for GLMConfig {
+impl Config for QwenConfig {
     fn headers(&self) -> HeaderMap {
         let mut headers = HeaderMap::new();
 
@@ -64,7 +63,7 @@ impl Config for GLMConfig {
     }
 }
 
-impl Clone for GLMConfig {
+impl Clone for QwenConfig {
     fn clone(&self) -> Self {
         Self {
             api_base: self.api_base.clone(),
@@ -73,7 +72,7 @@ impl Clone for GLMConfig {
     }
 }
 
-impl OAIConfig for GLMConfig {
+impl OAIConfig for QwenConfig {
     fn create() -> Self {
         Self::default()
     }
