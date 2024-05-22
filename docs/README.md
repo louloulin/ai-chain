@@ -8,12 +8,12 @@
 
 
 
-### changelog 2024-05-22 0.14.2
+### changelog 2024-05-22 0.14.4
 * fix ai-chain executor costume bug
 * add qwen model support
 * other bug fix
 
-### changelog 2024-05-21 0.14.2
+### changelog 2024-05-21 0.14.3
 * improve openai-compatible api
 * add glm llm
 * upgrade moonshot llm
