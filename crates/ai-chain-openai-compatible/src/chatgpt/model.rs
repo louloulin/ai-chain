@@ -1,7 +1,3 @@
-use ai_chain::options::{ModelRef, Opt};
-use serde::{Deserialize, Serialize};
-use strum_macros::EnumString;
-
 /// The `Model` enum represents the available ChatGPT models that you can use through the OpenAI
 /// API.
 ///

@@ -14,3 +14,4 @@ thiserror = "1.0.40"
 anyhow = "1.0.71"
 lazy_static = "1.4.0"
 serde_yaml = "0.9.21"
+bincode = { version = "2.0.0-rc.3", features = ["derive"]}

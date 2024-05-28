@@ -1,6 +1,6 @@
+use std::marker::PhantomData;
 use super::prompt::completion_to_output;
 use super::prompt::stream_to_output;
-use async_openai::config::OpenAIConfig;
 use async_openai::types::ChatCompletionRequestMessage;
 
 use async_openai::types::ChatCompletionRequestUserMessageContent;
@@ -33,11 +33,11 @@ use crate::chatgpt::OpenAICompatibleInnerError;
 /// The `Executor` struct for the ChatGPT model. This executor uses the `async_openai` crate to communicate with the OpenAI API.
 #[derive(Clone)]
 pub struct Executor<C: OAIConfig> {
-    config: C,
     /// The client used to communicate with the OpenAI API.
     client: Arc<async_openai::Client<C>>,
     /// The per-invocation options for this executor.
     options: Options,
+    config: PhantomData<C>,
 }
 
 
@@ -170,13 +170,12 @@ impl<OConfig: OAIConfig> traits::Executor for Executor<OConfig> {
         if let Ok(base_url) = std::env::var("OPENAI_API_BASE_URL") {
             cfg = cfg.with_api_base(base_url);
         }
-        let config = cfg.clone();
 
         let client = Arc::new(async_openai::Client::with_config(cfg));
         Ok(Self {
-            config,
             client,
             options,
+            config: PhantomData,
         })
     }
 
