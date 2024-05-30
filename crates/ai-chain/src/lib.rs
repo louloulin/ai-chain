@@ -41,6 +41,7 @@ pub mod traits;
 
 // Utilities and tools
 pub mod summarization;
+pub mod workflow;
 
 // Re-exports for convenient usage
 pub use parameters::Parameters;
