@@ -1,15 +1,20 @@
+use std::env;
+use ai_chain::{executor, prompt};
 use async_trait::async_trait;
 
-use ai_chain::tools::{Tool, ToolDescription, ToolError};
+use ai_chain::tools::{Tool, ToolCollection, ToolDescription, ToolError};
 
 use ai_chain::multitool;
 use ai_chain::tools::tools::{
     BashTool, BashToolError, BashToolInput, BashToolOutput, ExitTool, ExitToolError, ExitToolInput,
     ExitToolOutput,
 };
-
+use ai_chain::traits::Executor;
+use ai_chain::parameters;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
+use ai_chain::prompt::{ChatMessage, ChatRole, ConversationTemplate, StringTemplate};
+use ai_chain::step::Step;
 
 // A simple example generating a prompt with some tools.
 multitool!(
@@ -29,7 +34,11 @@ multitool!(
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /*
+
+    // Create a new ChatGPT executor with the default settings
+    env::set_var("OPENAI_API_KEY", "sk-16519115bd424029ad9477a612bf5a9d");
+
+    let exec = executor!(qwen)?;
     let mut tool_collection = ToolCollection::<MyMultitool>::new();
     tool_collection.add_tool(BashTool::new().into());
     tool_collection.add_tool(ExitTool::new().into());
@@ -38,45 +47,35 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         tool_prompt,
         StringTemplate::tera("You may ONLY use one tool at a time. Please perform the following task: {{task}}. Once you have read the IP Address you may trigger ExitTool. -- Do not do this before you know the ip address. do not ask for more tasks."),
     ]);
+    let mut prompt = ConversationTemplate::new()
+        .with_system_template(
+            "You are an automated agent for performing tasks. Your output must always be YAML.",
+        )
+        .with_user(template);
     let task = "Figure out my IP address";
-    let exec = executor!()?;
-
-    let mut chat = ChatPrompt::builder()
-        .system("You are an automated agent for performing tasks. Your output must always be YAML.")
-        .add_message(ChatMessage::from_template(ChatRole::User, template))
-        .build()
-        .unwrap();
-    let params = parameters!("task" => task);
     for _ in 1..5 {
-        let res = Step::for_prompt(chat.clone().into())
-            .run(&params, &exec)
+        let result = Step::for_prompt_template(prompt.clone().into())
+            .run(&parameters!("task" => task), &exec)
             .await?;
-        let message_text = res.primary_textual_output().await.unwrap();
-        println!("Assistant: {}", message_text);
-        println!("=============");
-        let next_step = match tool_collection.process_chat_input(&message_text).await {
-            Ok(x) => StringTemplate::static_string(format!(
-                "```yaml
-                    {}
-                    ```
-                    Proceed with your next command.",
-                x
-            )),
-            Err(e) => StringTemplate::static_string(format!(
-                "Correct your output and perform the task - {}. Your task was: {}",
-                e, task
-            )),
-        };
-        println!("User: {}", next_step);
-        chat = chat
-            .to_builder()
-            .add_message(ChatMessage::from_template(
-                ChatRole::System,
-                StringTemplate::static_string(message_text),
-            ))
-            .add_message(ChatMessage::from_template(ChatRole::User, next_step))
-            .build()
+        let msg = result
+            .to_immediate()
+            .await?
+            .primary_textual_output()
             .unwrap();
-    } */
+        println!("{}", &msg);
+        match tool_collection
+            .process_chat_input(
+                &msg
+            )
+            .await
+        {
+            Ok(output) => {
+                println!("{}", &output);
+                 prompt = ConversationTemplate::new().with_user_template(msg.as_str()).with_user_template(&output);
+            }
+            Err(e) => println!("Error: {}", e),
+        }
+    }
+
     Ok(())
 }
