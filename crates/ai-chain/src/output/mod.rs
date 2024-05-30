@@ -1,4 +1,5 @@
 mod stream;
+pub mod parser;
 
 use core::fmt;
 
@@ -75,6 +76,7 @@ impl fmt::Display for Output {
 
 pub struct Immediate(Data<String>);
 
+
 impl Immediate {
     /// Returns a reference to the content if it is immediately available.
     pub fn get_content(&self) -> &Data<String> {
@@ -90,8 +92,30 @@ impl Immediate {
     }
 }
 
+impl From<Immediate> for String {
+    /// Converts a `&str` into a [`String`].
+    ///
+    /// The result is allocated on the heap.
+    #[inline]
+    fn from(s: Immediate) -> String {
+        s.0.to_text()
+    }
+}
+
 impl fmt::Display for Immediate {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.0.fmt(f)
     }
+}
+
+#[test]
+fn test_from_data_to_str(){
+
+    let data = Data::Text("Hello, world!".to_string());
+    let immediate = Immediate(data);
+
+    let s:String = immediate.into();
+    println!("a:{}",&s);
+    assert_eq!(s, "Hello, world!");
+
 }
