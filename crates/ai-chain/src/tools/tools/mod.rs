@@ -6,6 +6,11 @@ mod bing_search;
 mod exit;
 mod google_serper;
 mod python;
+
+mod sql;
+
+mod scraper;
+
 mod vectorstore;
 pub use bash::{BashTool, BashToolError, BashToolInput, BashToolOutput};
 pub use bing_search::{BingSearch, BingSearchError, BingSearchInput, BingSearchOutput};
