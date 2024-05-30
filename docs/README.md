@@ -93,14 +93,13 @@ ai-chain-moonshot = "0.14.2"
 
 * coding
 
-```rust
+```
 env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
 let exec = executor!(mooonshot)?;
 let res = prompt!(
     "You are a robot assistant for making personalized greetings",
     "Make a personalized greeting for Joe"
-)
-.run(parameters()!, &exec)
+).run(parameters()!, &exec)
 .await?;
 println!("{}", res);
 ```
@@ -119,14 +118,13 @@ ai-chain-glm = "0.14.2"
 
 * coding
 
-```rust
+```
 env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
 let exec = executor!(glm)?;
 let res = prompt!(
     "You are a robot assistant for making personalized greetings",
     "Make a personalized greeting for Joe"
-)
-.run(parameters()!, &exec)
+).run(parameters()!, &exec)
 .await?;
 println!("{}", res);
 ```
@@ -145,7 +143,7 @@ ai-chain-qwen = "0.14.2"
 
 * coding
 
-```rust
+```
 env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
 let exec = executor!(qwen)?;
 let res = prompt!(
@@ -156,17 +154,20 @@ let res = prompt!(
 .await?;
 println!("{}", res);
 
+```
+
 The examples for `ai-chain-openai` or `ai-chain-moonshot` or others llms require you to set the `OPENAI_API_KEY` environment variable which you can do like this:
 
 ```bash
 export OPENAI_API_KEY="sk-YOUR_OPEN_AI_KEY_HERE"
+
 ```
 
-* support costume llm
+* support custom llm
 
-```rust
+```
 env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
-let exec = executor!(costume,ai_chain_qwen)?;
+let exec = executor!(custom,ai_chain_qwen)?;
 let res = prompt!(
     "You are a robot assistant for making personalized greetings",
     "Make a personalized greeting for Joe"
@@ -174,11 +175,6 @@ let res = prompt!(
 .run(parameters()!, &exec)
 .await?;
 println!("{}", res);
-
-The examples for `ai-chain-openai` or `ai-chain-moonshot` or others llms require you to set the `OPENAI_API_KEY` environment variable which you can do like this:
-
-```bash
-export OPENAI_API_KEY="sk-YOUR_OPEN_AI_KEY_HERE"
 ```
 
 ## Contributing 🤝
