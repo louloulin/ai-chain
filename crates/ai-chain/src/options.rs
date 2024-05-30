@@ -414,9 +414,9 @@ pub enum Opt {
 
 // Helper function to extract environment variables
 fn option_from_env<K, F>(opts: &mut OptionsBuilder, key: K, f: F) -> Result<(), VarError>
-where
-    K: AsRef<OsStr>,
-    F: FnOnce(String) -> Option<Opt>,
+    where
+        K: AsRef<OsStr>,
+        F: FnOnce(String) -> Option<Opt>,
 {
     match std::env::var(key) {
         Ok(v) => {
@@ -454,7 +454,7 @@ opt_parse_str!(MaxTokens);
 opt_parse_str!(MaxContextSize);
 // Skip stop sequence?
 // Skip stream?
-
+opt_parse_str!(Stream);
 opt_parse_str!(FrequencyPenalty);
 opt_parse_str!(PresencePenalty);
 // Skip TokenBias for now
@@ -497,6 +497,7 @@ pub fn options_from_env() -> Result<Options, VarError> {
         ApiKey,
         NThreads,
         MaxTokens,
+        Stream,
         MaxContextSize,
         FrequencyPenalty,
         PresencePenalty,
@@ -514,7 +515,19 @@ pub fn options_from_env() -> Result<Options, VarError> {
 
 #[cfg(test)]
 mod tests {
+    use std::env;
     use super::*;
+
+    #[test]
+    fn test_options_from_env_stream() {
+        let orig_api_key = "!asd";
+        let flag: bool = true;
+        env::set_var("ai_chain_STREAM", flag.to_string());
+        let opts = options_from_env().unwrap();
+        let a = opts.get(OptDiscriminants::Stream).unwrap();
+        println!("{:?}", a)
+    }
+
     // Tests for FromStr
     #[test]
     fn test_options_from_env() {
