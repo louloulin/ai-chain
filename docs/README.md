@@ -93,7 +93,7 @@ ai-chain-moonshot = "0.14.2"
 
 * coding
 
-```
+```rust
 env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
 let exec = executor!(mooonshot)?;
 let res = prompt!(
@@ -143,7 +143,7 @@ ai-chain-qwen = "0.14.2"
 
 * coding
 
-```
+```rust
 env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
 let exec = executor!(qwen)?;
 let res = prompt!(
@@ -165,7 +165,7 @@ export OPENAI_API_KEY="sk-YOUR_OPEN_AI_KEY_HERE"
 
 * support custom llm
 
-```
+```rust
 env::set_var("OPENAI_API_KEY", "sk-7LVW4lfKX3ZL01Iwuz8H0oZsUaLsEuO7ri9bfRKV36NrTE1A");
 let exec = executor!(custom,ai_chain_qwen)?;
 let res = prompt!(
