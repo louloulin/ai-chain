@@ -1,5 +1,12 @@
 [workspace]
-members = ["crates/*"]
+members = [
+    "crates/ai-chain-macros",
+    "crates/ai-chain-types",
+    "crates/ai-chain",
+    "crates/ai-chain-model-provider/*",
+    "crates/ai-chain-vector/*"
+
+]
 resolver = "2"
 
 [workspace.metadata.release]

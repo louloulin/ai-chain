@@ -21,7 +21,7 @@
 
 ## Examples 💡
 
-To help you get started, here is an example demonstrating how to use `ai-chain`. You can find more examples in the [examples folder](/crates/ai-chain-openai/examples) in the repository.
+To help you get started, here is an example demonstrating how to use `ai-chain`. You can find more examples in the [examples folder](/crates/ai-chain-model-provider/ai-chain-openai/examples) in the repository.
 
 ```rust
 let exec = executor!()?;
